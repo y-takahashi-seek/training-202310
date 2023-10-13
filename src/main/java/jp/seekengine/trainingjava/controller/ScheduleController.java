@@ -23,4 +23,9 @@ public class ScheduleController {
         String message = scheduleService.createSampleMessage(sampleRequest.sampleField1(), sampleRequest.sampleField2());
         return new SampleResponse(message);
     }
+//    @GetMapping("/times/current")
+//    public SampleResponse sample1(){
+//        //現在時刻作成処理
+//
+//    }
 }
