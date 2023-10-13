@@ -26,6 +26,6 @@ public class ScheduleController {
 //    @GetMapping("/times/current")
 //    public SampleResponse sample1(){
 //        //現在時刻作成処理
-//
+//   kyou
 //    }
 }
