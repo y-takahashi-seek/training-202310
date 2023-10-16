@@ -32,9 +32,7 @@ public class ScheduleController {
     public currentTimeResponse sample1(){
         //現在時刻作成処理
         LocalDateTime now = LocalDateTime.now();
-
         // レスポンス用のオブジェクトを作成
-       // DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ss+09:00");
         String datetime= now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00"));
       return new currentTimeResponse(datetime);
     }
