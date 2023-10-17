@@ -7,5 +7,9 @@ public class ScheduleService {
     public String createSampleMessage(String message1, String message2) {
         return "Messageとして「%s」と「%s」を受け取りました。".formatted(message1, message2);
     }
+//    public  String creatSamletime(Number year, Number month,Number date,
+//                                  Number hour , Number minute , Number second){
+//        return ""
+//    }
 
 }
