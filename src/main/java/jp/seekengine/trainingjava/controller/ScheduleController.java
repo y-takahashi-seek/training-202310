@@ -1,7 +1,6 @@
 package jp.seekengine.trainingjava.controller;
 
 import jp.seekengine.trainingjava.controller.request.SampleRequest;
-import jp.seekengine.trainingjava.controller.request.Time;
 import jp.seekengine.trainingjava.controller.request.TimesRequest;
 import jp.seekengine.trainingjava.controller.request.TimeDetail;
 
