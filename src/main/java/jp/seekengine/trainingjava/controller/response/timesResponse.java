@@ -2,9 +2,6 @@ package jp.seekengine.trainingjava.controller.response;
 
 import java.io.Serializable;
 
-public record currentTimeResponse(
-        String currentTime
-
+public record timesResponse(
+        String[] convertedTimes
 ) implements Serializable {}
-
-
