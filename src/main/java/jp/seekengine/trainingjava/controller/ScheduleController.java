@@ -79,87 +79,89 @@ public class ScheduleController {
 
     @GetMapping("/duration")
     public DurationTimeResponse sample4(@RequestBody EachTimeRequest eachtimeRequest) {
-            LocalDateTime startDateTime = toLocalDateTime(eachtimeRequest.startTime());
-            LocalDateTime endDateTime = toLocalDateTime(eachtimeRequest.endTime());
+        LocalDateTime startDateTime = toLocalDateTime(eachtimeRequest.startTime());
+        LocalDateTime endDateTime = toLocalDateTime(eachtimeRequest.endTime());
 
-            Duration duration = Duration.between(startDateTime, endDateTime);
+        Duration duration = Duration.between(startDateTime, endDateTime);
 
-            String iso8601Duration = formatToISO8601(duration);
+        String iso8601Duration = formatToISO8601(duration);
 
-            return new DurationTimeResponse(iso8601Duration);
+        return new DurationTimeResponse(iso8601Duration);
+    }
+
+    private LocalDateTime toLocalDateTime(EachTimeDetail detail) {
+        return LocalDateTime.of(
+                detail.yearAsInt(),
+                detail.monthAsInt(),
+                detail.dateAsInt(),
+                detail.hourAsInt(),
+                detail.minuteAsInt(),
+                detail.secondAsInt()
+        );
+    }
+
+    private String formatToISO8601(Duration duration) {
+        long days = duration.toDays();
+        duration = duration.minusDays(days);
+
+        long hours = duration.toHours();
+        duration = duration.minusHours(hours);
+
+        long minutes = duration.toMinutes();
+        duration = duration.minusMinutes(minutes);
+
+        long seconds = duration.getSeconds();
+
+        StringBuilder result = new StringBuilder("P");
+
+        if (days > 0) {
+            result.append(days).append("D");
         }
 
-        private LocalDateTime toLocalDateTime(EachTimeDetail detail) {
-            return LocalDateTime.of(
-                    detail.yearAsInt(),
-                    detail.monthAsInt(),
-                    detail.dateAsInt(),
-                    detail.hourAsInt(),
-                    detail.minuteAsInt(),
-                    detail.secondAsInt()
-            );
+        if (hours > 0 || minutes > 0 || seconds > 0) {
+            result.append("T");
         }
 
-        private String formatToISO8601(Duration duration) {
-            long days = duration.toDays();
-            duration = duration.minusDays(days);
-
-            long hours = duration.toHours();
-            duration = duration.minusHours(hours);
-
-            long minutes = duration.toMinutes();
-            duration = duration.minusMinutes(minutes);
-
-            long seconds = duration.getSeconds();
-
-            StringBuilder result = new StringBuilder("P");
-
-            if (days > 0) {
-                result.append(days).append("D");
-            }
-
-            if (hours > 0 || minutes > 0 || seconds > 0) {
-                result.append("T");
-            }
-
-            if (hours > 0) {
-                result.append(hours).append("H");
-            }
-
-            if (minutes > 0) {
-                result.append(minutes).append("M");
-            }
-
-            if (seconds > 0) {
-                result.append(seconds).append("S");
-            }
-
-            return result.toString();
+        if (hours > 0) {
+            result.append(hours).append("H");
         }
 
+        if (minutes > 0) {
+            result.append(minutes).append("M");
+        }
 
-    @GetMapping ("/end")
-    public Map<String, List<String>> samlple5(@RequestBody SampleTimeRequest timeRequest) {
-        SampleTimeRequest.SampleTimeDetail startTimeDetail = timeRequest.startTime();
-        SampleTimeRequest.SampleTimeDetail durationDetail = timeRequest.duration();
+        if (seconds > 0) {
+            result.append(seconds).append("S");
+        }
 
-        LocalDate startDate = LocalDate.of((int) startTimeDetail.year(), (int) startTimeDetail.month(), (int) startTimeDetail.date());
-        LocalTime startTimeObj = LocalTime.of((int) startTimeDetail.hour(), (int) startTimeDetail.minute(), (int) startTimeDetail.second());
-        LocalDateTime startTime = LocalDateTime.of(startDate, startTimeObj);
+        return result.toString();
+    }
 
-        LocalDateTime endTime = startTime.plusHours(durationDetail.hour())
-                .plusMinutes(durationDetail.minute())
-                .plusSeconds(durationDetail.second());
-
-        List<String> convertedTimes = Arrays.asList(
-                startTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                endTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    @GetMapping("/end")
+    public SampleTimeResponse calculateEndTime(@RequestBody SampleTimeRequest sampleTimeRequest) {
+        //StartTimeとDurationをインナーレコードにした形式
+        SampleTimeRequest.StartTime startTime = sampleTimeRequest.startTime();
+        SampleTimeRequest.Duration duration = sampleTimeRequest.duration();
+        //jp.seekengine.trainingjava.controller.request.Duration duration = sampleTimeRequest.duration();
+        ZonedDateTime startDateTime = ZonedDateTime.of(
+                startTime.year(),
+                startTime.month(),
+                startTime.date(),
+                startTime.hour(),
+                startTime.minute(),
+                startTime.second(),
+                0,
+                ZoneId.of("Asia/Tokyo")
         );
 
-        return Map.of("convertedTimes", convertedTimes);
-    }
+        ZonedDateTime endDateTime = startDateTime.plusHours(duration.hour())
+                .plusMinutes(duration.minute())
+                .plusSeconds(duration.second());
 
+
+        return new SampleTimeResponse(endDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
+}
 
 
 
