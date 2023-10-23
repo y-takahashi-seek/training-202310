@@ -94,11 +94,16 @@ public class ScheduleController {
 
     @GetMapping("/times/convert")
     public timesResponse sample3(@RequestBody TimesRequest request) {
-        String[] convertedTimes = Arrays.stream(request.times())
-                .map(TimeDetail::toISO8601)
-                .toArray(String[]::new);
-        return new timesResponse(convertedTimes);
+        try {
+            String[] convertedTimes = Arrays.stream(request.times())
+                    .map(timeDetail -> timeDetail.convertTimeZone(request.requestTimeZoneId(), request.responseTimeZoneId()))
+                    .toArray(String[]::new);
+            return new timesResponse(convertedTimes);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
+
 
 
     @GetMapping("/duration")
@@ -163,27 +168,31 @@ public class ScheduleController {
 
     @GetMapping("/end")
     public SampleTimeResponse calculateEndTime(@RequestBody SampleTimeRequest sampleTimeRequest) {
-        //StartTimeとDurationをインナーレコードにした形式
-        SampleTimeRequest.StartTime startTime = sampleTimeRequest.startTime();
-        SampleTimeRequest.Duration duration = sampleTimeRequest.duration();
-        //jp.seekengine.trainingjava.controller.request.Duration duration = sampleTimeRequest.duration();
-        ZonedDateTime startDateTime = ZonedDateTime.of(
-                startTime.year(),
-                startTime.month(),
-                startTime.date(),
-                startTime.hour(),
-                startTime.minute(),
-                startTime.second(),
-                0,
-                ZoneId.of("Asia/Tokyo")
-        );
+        try {
+            //StartTimeとDurationをインナーレコードにした形式
+            SampleTimeRequest.StartTime startTime = sampleTimeRequest.startTime();
+            SampleTimeRequest.Duration duration = sampleTimeRequest.duration();
+            //jp.seekengine.trainingjava.controller.request.Duration duration = sampleTimeRequest.duration();
 
-        ZonedDateTime endDateTime = startDateTime.plusHours(duration.hour())
-                .plusMinutes(duration.minute())
-                .plusSeconds(duration.second());
+            ZoneId requestZoneId = ZoneId.of(sampleTimeRequest.requestTimeZoneId());
+            ZoneId responseZoneId = ZoneId.of(sampleTimeRequest.responseTimeZoneId());
 
+            LocalDateTime startLocalDateTime = LocalDateTime.of(
+                    startTime.year(), startTime.month(), startTime.date(),
+                    startTime.hour(), startTime.minute(), startTime.second()
+            );
 
-        return new SampleTimeResponse(endDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            ZonedDateTime startZonedDateTime = ZonedDateTime.of(startLocalDateTime, requestZoneId);
+            ZonedDateTime endZonedDateTime = startZonedDateTime.plusHours(duration.hour())
+                    .plusMinutes(duration.minute())
+                    .plusSeconds(duration.second())
+                    .withZoneSameInstant(responseZoneId);
+
+            String formattedEndTime = endZonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return new SampleTimeResponse(formattedEndTime);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
+        }
     }
 }
 

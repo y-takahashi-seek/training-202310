@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public record SampleTimeRequest(
         StartTime startTime,
-        Duration duration
+        Duration duration,
+        String requestTimeZoneId,
+        String responseTimeZoneId
 )implements Serializable {
     public record Duration(
             int hour, int minute, int second
