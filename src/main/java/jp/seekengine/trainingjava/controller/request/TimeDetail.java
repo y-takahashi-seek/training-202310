@@ -1,5 +1,5 @@
 package jp.seekengine.trainingjava.controller.request;
-
+//task3
 public record TimeDetail(int year, int month, int date, int hour, int minute, int second) {
 
     public String toISO8601() {

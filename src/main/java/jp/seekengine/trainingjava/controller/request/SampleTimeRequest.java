@@ -1,5 +1,5 @@
 package jp.seekengine.trainingjava.controller.request;
-
+//task5
 import java.io.Serializable;
 
 public record SampleTimeRequest(

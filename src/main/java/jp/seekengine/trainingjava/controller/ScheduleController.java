@@ -5,7 +5,9 @@ import jp.seekengine.trainingjava.controller.request.*;
 import jp.seekengine.trainingjava.controller.response.*;
 import jp.seekengine.trainingjava.domain.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.awt.*;
 import java.lang.reflect.Array;
@@ -47,26 +49,48 @@ public class ScheduleController {
     @GetMapping("/times/current/convert")
     public convertedTimeResponse sample2(@RequestBody yearMonthDateRequest Samplerequest) {
 
-        //レスポンスを時間に変換
-        int year = Integer.parseInt(Samplerequest.year().toString());
-        int month = Integer.parseInt(Samplerequest.month().toString());
-        int date = Integer.parseInt(Samplerequest.date().toString());
-        int hour = Integer.parseInt(Samplerequest.hour().toString());
-        int minute = Integer.parseInt(Samplerequest.minute().toString());
-        int second = Integer.parseInt(Samplerequest.second().toString());
-        // 日時オブジェクトを生成
-        LocalDateTime localDateTime = LocalDateTime.of(year, month, date, hour, minute, second);
+//        //レスポンスを時間に変換
+//        int year = Integer.parseInt(Samplerequest.year().toString());
+//        int month = Integer.parseInt(Samplerequest.month().toString());
+//        int date = Integer.parseInt(Samplerequest.date().toString());
+//        int hour = Integer.parseInt(Samplerequest.hour().toString());
+//        int minute = Integer.parseInt(Samplerequest.minute().toString());
+//        int second = Integer.parseInt(Samplerequest.second().toString());
+//        // 日時オブジェクトを生成
+//        LocalDateTime localDateTime = LocalDateTime.of(year, month, date, hour, minute, second);
+//
+//        // 日本標準時に変換
+//        ZoneId zoneId = ZoneId.of("Asia/Tokyo");
+//        LocalDateTime convertedDateTime = localDateTime.atZone(zoneId).toLocalDateTime();
+//
+//        // ISO 8601 拡張形式に変換
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'+09:00'");
+//        String convertedTimes = formatter.format(convertedDateTime);
+//
+//        return new convertedTimeResponse(convertedTimes);
+        try {
+            // リクエストから日時とタイムゾーンを取得
+            LocalDateTime localDateTime = LocalDateTime.of(
+                    Samplerequest.year(), Samplerequest.month(), Samplerequest.date(),
+                    Samplerequest.hour(), Samplerequest.minute(), Samplerequest.second()
+            );
+            ZoneId requestZoneId = ZoneId.of(Samplerequest.requestTimeZoneId());
+            ZoneId responseZoneId = ZoneId.of(Samplerequest.responseTimeZoneId());
 
-        // 日本標準時に変換
-        ZoneId zoneId = ZoneId.of("Asia/Tokyo");
-        LocalDateTime convertedDateTime = localDateTime.atZone(zoneId).toLocalDateTime();
+            // リクエストのタイムゾーンを考慮して日時を変換
+            ZonedDateTime zonedDateTime = localDateTime.atZone(requestZoneId);
+            ZonedDateTime convertedDateTime = zonedDateTime.withZoneSameInstant(responseZoneId);
 
-        // ISO 8601 拡張形式に変換
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'+09:00'");
-        String convertedTimes = formatter.format(convertedDateTime);
-
-        return new convertedTimeResponse(convertedTimes);
+            // ISO 8601 拡張形式に変換してレスポンスを返却
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            String convertedTime = formatter.format(convertedDateTime);
+            return new convertedTimeResponse(convertedTime);
+        } catch (DateTimeException e) {
+            // 不正なタイムゾーンIDが指定された場合など
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date/time or timezone");
+        }
     }
+
 
     @GetMapping("/times/convert")
     public timesResponse sample3(@RequestBody TimesRequest request) {
