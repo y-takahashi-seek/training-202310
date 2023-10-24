@@ -12,4 +12,5 @@ public record yearMonthDateRequest (
     String requestTimeZoneId,
     String responseTimeZoneId
 ) implements Serializable {
+
 }
