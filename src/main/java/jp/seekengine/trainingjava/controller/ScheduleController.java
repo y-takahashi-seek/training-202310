@@ -1,5 +1,15 @@
 package jp.seekengine.trainingjava.controller;
 
+import jp.seekengine.trainingjava.controller.request.MessageRequest;
+import jp.seekengine.trainingjava.controller.request.SampleRequest;
+import jp.seekengine.trainingjava.controller.response.SampleResponse;
+import jp.seekengine.trainingjava.domain.ScheduleService;
+import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import jp.seekengine.trainingjava.controller.request.*;
 
 import jp.seekengine.trainingjava.controller.response.*;
@@ -161,7 +171,20 @@ public class ScheduleController {
 
         return new SampleTimeResponse(endDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
+
+    @PostMapping("/message")
+    public MessageEntity sample(@RequestBody MessageRequest message) {
+        return scheduleService.createMessage(message.message());
+    }
+
+    @GetMapping("/messages/{id}")
+    public MessageEntity samples(@PathVariable Integer id) {
+        return scheduleService.getMessageById(id);
+    }
+
+    @GetMapping("/messages/search")
+    public List<MessageEntity> sampleSearch(@RequestParam String message) {
+        return scheduleService.searchMessage(message);
+    }
+
 }
-
-
-
