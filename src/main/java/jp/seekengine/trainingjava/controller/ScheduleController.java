@@ -1,5 +1,15 @@
 package jp.seekengine.trainingjava.controller;
 
+import jp.seekengine.trainingjava.controller.request.MessageRequest;
+import jp.seekengine.trainingjava.controller.request.SampleRequest;
+import jp.seekengine.trainingjava.controller.response.SampleResponse;
+import jp.seekengine.trainingjava.domain.ScheduleService;
+import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import jp.seekengine.trainingjava.controller.request.*;
 
 import jp.seekengine.trainingjava.controller.response.*;
@@ -83,15 +93,7 @@ public class ScheduleController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date/time or timezone");
         }
 
-
-
     }
-
-
-
-
-
-
 
     @GetMapping("/times/convert")
     public timesResponse sample3(@RequestBody TimesRequest request) {
@@ -104,7 +106,6 @@ public class ScheduleController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-
 
 
     @GetMapping("/duration")
@@ -204,8 +205,19 @@ public class ScheduleController {
         }
     }
 
+    @PostMapping("/message")
+    public MessageEntity sample(@RequestBody MessageRequest message) {
+        return scheduleService.createMessage(message.message());
+    }
+
+    @GetMapping("/messages/{id}")
+    public MessageEntity samples(@PathVariable Integer id) {
+        return scheduleService.getMessageById(id);
+    }
+
+    @GetMapping("/messages/search")
+    public List<MessageEntity> sampleSearch(@RequestParam String message) {
+        return scheduleService.searchMessage(message);
+    }
+
 }
-
-
-
-
