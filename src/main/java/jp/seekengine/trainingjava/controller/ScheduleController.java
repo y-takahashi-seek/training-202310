@@ -6,6 +6,7 @@ import jp.seekengine.trainingjava.domain.ScheduleService;
 import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,7 +14,9 @@ import java.time.Duration;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ScheduleController {
@@ -211,4 +214,16 @@ public class ScheduleController {
         return scheduleService.searchMessage(message);
     }
 
+
+    @PostMapping("/schedule")
+    public ResponseEntity<Map<String, Long>> createSchedule(@RequestBody ScheduleRequest request) {
+        Long scheduleId = scheduleService.createSchedule(request.title(), request.fromDatetime(), request.toDatetime());
+        Map<String, Long> response = Collections.singletonMap("schedule_id", scheduleId);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/schedule/{id}")
+    public ResponseEntity<ScheduleResponse> responesSchedule(@PathVariable Long id) {
+        ScheduleResponse response = scheduleService.getScheduleById(id);
+        return ResponseEntity.ok(response);
+    }
 }

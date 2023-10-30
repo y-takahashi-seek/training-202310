@@ -1,23 +1,19 @@
 package jp.seekengine.trainingjava.domain;
 
-import jp.seekengine.trainingjava.controller.request.SampleTimeRequest;
-import jp.seekengine.trainingjava.controller.response.SampleTimeResponse;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+import jakarta.persistence.EntityNotFoundException;
+import jp.seekengine.trainingjava.controller.Schedule;
+import jp.seekengine.trainingjava.controller.ScheduleRepository;
+import jp.seekengine.trainingjava.controller.response.ScheduleResponse;
 import jp.seekengine.trainingjava.infrastructure.SampleRepository;
 import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class ScheduleService {
@@ -70,8 +66,26 @@ public class ScheduleService {
         return sampleRepository.findByMessageContaining(message);
     }
 
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
+    public Long createSchedule(String title, String fromDatetime, String toDatetime) {
+        Schedule schedule = new Schedule();
+        schedule.setTitle(title);
+        schedule.setFromDatetime(fromDatetime);
+        schedule.setToDatetime(toDatetime);
+        scheduleRepository.save(schedule);
+        return schedule.getId();
+    }
+
+    public ScheduleResponse getScheduleById(Long id) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Schedule not found with id: " + id));
+
+        return new ScheduleResponse(schedule.getId(), schedule.getTitle(), schedule.getFromDatetime(), schedule.getToDatetime());
+    }
 }
+
 
 
 
