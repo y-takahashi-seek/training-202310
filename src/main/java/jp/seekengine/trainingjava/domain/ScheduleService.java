@@ -3,6 +3,7 @@ package jp.seekengine.trainingjava.domain;
 import jakarta.persistence.EntityNotFoundException;
 import jp.seekengine.trainingjava.controller.Schedule;
 import jp.seekengine.trainingjava.controller.ScheduleRepository;
+import jp.seekengine.trainingjava.controller.response.ScheduleItemResponse;
 import jp.seekengine.trainingjava.controller.response.ScheduleResponse;
 import jp.seekengine.trainingjava.infrastructure.SampleRepository;
 import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
@@ -14,6 +15,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -83,6 +85,13 @@ public class ScheduleService {
                 .orElseThrow(() -> new EntityNotFoundException("Schedule not found with id: " + id));
 
         return new ScheduleResponse(schedule.getId(), schedule.getTitle(), schedule.getFromDatetime(), schedule.getToDatetime());
+    }
+
+    public List<ScheduleItemResponse> getSchedulesByTimeRange(String fromDatetime, String toDatetime) {
+        List<Schedule> schedules = (List<Schedule>) scheduleRepository.findSchedulesByTimeRange(fromDatetime, toDatetime);
+        return schedules.stream()
+                .map(schedule -> new ScheduleItemResponse(schedule.getId(), schedule.getTitle(), schedule.getFromDatetime(), schedule.getToDatetime()))
+                .collect(Collectors.toList());
     }
 }
 

@@ -221,9 +221,18 @@ public class ScheduleController {
         Map<String, Long> response = Collections.singletonMap("schedule_id", scheduleId);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/schedule/{id}")
     public ResponseEntity<ScheduleResponse> responesSchedule(@PathVariable Long id) {
         ScheduleResponse response = scheduleService.getScheduleById(id);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/schedule/range")
+    public ResponseEntity<List<ScheduleItemResponse>> getSchedulesByTimeRange(
+            @RequestParam String fromDatetime,
+            @RequestParam String toDatetime) {
+        List<ScheduleItemResponse> schedules = scheduleService.getSchedulesByTimeRange(fromDatetime, toDatetime);
+        return ResponseEntity.ok(schedules);
     }
 }
