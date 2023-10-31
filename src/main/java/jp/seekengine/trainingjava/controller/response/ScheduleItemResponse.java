@@ -1,8 +1,8 @@
 package jp.seekengine.trainingjava.controller.response;
 
 import java.io.Serializable;
-//task4
-public record DurationTimeResponse(
-        String duration
+
+public record ScheduleItemResponse(
+        Long id, String title, String fromDatetime, String toDatetime
 ) implements Serializable {
 }

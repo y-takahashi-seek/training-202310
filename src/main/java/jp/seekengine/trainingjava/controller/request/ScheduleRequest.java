@@ -1,7 +1,7 @@
 package jp.seekengine.trainingjava.controller.request;
-//task5
+
 import java.io.Serializable;
 
-public record Duration(
-        int hour, int minute, int second
+public record ScheduleRequest(
+        String title, String fromDatetime, String toDatetime
 )implements Serializable {}
