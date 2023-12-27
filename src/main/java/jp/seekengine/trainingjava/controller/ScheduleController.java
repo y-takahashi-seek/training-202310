@@ -33,9 +33,9 @@ public class ScheduleController {
 
     @GetMapping("/times/current")
     public currentTimeResponse sample1() {
-        //現在時刻作成処理
+        
         LocalDateTime now = LocalDateTime.now();
-        // レスポンス用のオブジェクトを作成
+      
         String datetime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00"));
         return new currentTimeResponse(datetime);
     }
@@ -43,44 +43,21 @@ public class ScheduleController {
     @GetMapping("/times/current/convert")
     public convertedTimeResponse sample2(@RequestBody yearMonthDateRequest Samplerequest) {
 
-//        //レスポンスを時間に変換
-//        int year = Integer.parseInt(Samplerequest.year().toString());
-//        int month = Integer.parseInt(Samplerequest.month().toString());
-//        int date = Integer.parseInt(Samplerequest.date().toString());
-//        int hour = Integer.parseInt(Samplerequest.hour().toString());
-//        int minute = Integer.parseInt(Samplerequest.minute().toString());
-//        int second = Integer.parseInt(Samplerequest.second().toString());
-//        // 日時オブジェクトを生成
-//        LocalDateTime localDateTime = LocalDateTime.of(year, month, date, hour, minute, second);
-//
-//        // 日本標準時に変換
-//        ZoneId zoneId = ZoneId.of("Asia/Tokyo");
-//        LocalDateTime convertedDateTime = localDateTime.atZone(zoneId).toLocalDateTime();
-//
-//        // ISO 8601 拡張形式に変換
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'+09:00'");
-//        String convertedTimes = formatter.format(convertedDateTime);
-//
-//        return new convertedTimeResponse(convertedTimes);
+
 
         try {
-            // リクエストから日時とタイムゾーンを取得
+           
             LocalDateTime localDateTime = scheduleService.localdatetimeformatt(Samplerequest.year(), Samplerequest.month(), Samplerequest.date(),
                     Samplerequest.hour(), Samplerequest.minute(), Samplerequest.second());
-//            ZoneId requestZoneId = ZoneId.of(Samplerequest.requestTimeZoneId());
-//            ZoneId responseZoneId = ZoneId.of(Samplerequest.responseTimeZoneId());
-//
-//            // リクエストのタイムゾーンを考慮して日時を変換
-//            ZonedDateTime zonedDateTime = localDateTime.atZone(requestZoneId);
-//            ZonedDateTime convertedDateTime = zonedDateTime.withZoneSameInstant(responseZoneId);
+
 
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneid(localDateTime, Samplerequest.requestTimeZoneId(), Samplerequest.responseTimeZoneId()));
-            // ISO 8601 拡張形式に変換してレスポンスを返却
+          
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
             String convertedTime = formatter.format(zonedDateTime);
             return new convertedTimeResponse(convertedTime);
         } catch (DateTimeException e) {
-            // 不正なタイムゾーンIDが指定された場合など
+        
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date/time or timezone");
         }
 
@@ -162,28 +139,14 @@ public class ScheduleController {
     @GetMapping("/end")
     public SampleTimeResponse calculateEndTime(@RequestBody SampleTimeRequest sampleTimeRequest) {
         try {
-            //StartTimeとDurationをインナーレコードにした形式
+            
             SampleTimeRequest.StartTime startTime = sampleTimeRequest.startTime();
             SampleTimeRequest.Duration duration = sampleTimeRequest.duration();
-            //jp.seekengine.trainingjava.controller.request.Duration duration = sampleTimeRequest.duration();
-
-//            ZoneId requestZoneId = ZoneId.of(sampleTimeRequest.requestTimeZoneId());
-//            ZoneId responseZoneId = ZoneId.of(sampleTimeRequest.responseTimeZoneId());
-
-//            LocalDateTime startLocalDateTime = LocalDateTime.of(
-//                    startTime.year(), startTime.month(), startTime.date(),
-//                    startTime.hour(), startTime.minute(), startTime.second()
-//            );
-            //localdatetimeformattメゾットで日時を返す
-            LocalDateTime startLocalDateTime = scheduleService.localdatetimeformatt(startTime.year(), startTime.month(), startTime.date(),
+         
+            LocalDateTime startLocalDateTime = scheduleService.localdatetimeformat(startTime.year(), startTime.month(), startTime.date(),
                     startTime.hour(), startTime.minute(), startTime.second());
-//            ZonedDateTime startZonedDateTime = ZonedDateTime.of(startLocalDateTime, requestZoneId);
-//            ZonedDateTime endZonedDateTime = startZonedDateTime.plusHours(duration.hour())
-//                    .plusMinutes(duration.minute())
-//                    .plusSeconds(duration.second())
-//                    .withZoneSameInstant(responseZoneId);
-            //それぞれのゾーンIDをzoneidメゾットで日時変換
-            ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneid(startLocalDateTime,
+
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneId(startLocalDateTime,
                     sampleTimeRequest.requestTimeZoneId(), sampleTimeRequest.responseTimeZoneId()));
             ZonedDateTime endZonedDateTime = zonedDateTime.plusHours(duration.hour())
                     .plusMinutes(duration.minute())

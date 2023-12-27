@@ -1,7 +1,5 @@
 package jp.seekengine.trainingjava.domain;
 
-import jp.seekengine.trainingjava.controller.request.SampleTimeRequest;
-import jp.seekengine.trainingjava.controller.response.SampleTimeResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,14 +8,10 @@ import java.time.format.DateTimeFormatter;
 import jp.seekengine.trainingjava.infrastructure.SampleRepository;
 import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Service
 public class ScheduleService {
@@ -68,6 +62,14 @@ public class ScheduleService {
 
     public List<MessageEntity> searchMessage(String message) {
         return sampleRepository.findByMessageContaining(message);
+    }
+
+    public LocalDateTime localdatetimeformat(int year, int month, int date, int hour, int minute, int second) {
+        return null;
+    }
+
+    public CharSequence zoneId(LocalDateTime startLocalDateTime, String requestTimeZoneId, String responseTimeZoneId) {
+        return null;
     }
 
 
