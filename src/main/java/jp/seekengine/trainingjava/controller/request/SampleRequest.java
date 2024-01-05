@@ -5,4 +5,5 @@ import java.io.Serializable;
 public record SampleRequest(
         String sampleField1,
         String sampleField2
-) implements Serializable {}
+) implements Serializable {
+}

@@ -3,15 +3,14 @@ package jp.seekengine.trainingjava.domain;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import jp.seekengine.trainingjava.infrastructure.SampleRepository;
 import jp.seekengine.trainingjava.infrastructure.entity.MessageEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Service
 public class ScheduleService {
@@ -26,20 +25,12 @@ public class ScheduleService {
     public String createSampleMessage(String message1, String message2) {
         return "Messageとして「%s」と「%s」を受け取りました。".formatted(message1, message2);
     }
-//    public  String  TimeZoneId1(String message,String message4) {
-//         ZoneId reqZoneId = ZoneId.of(.requestTimeZoneId()),
-//        ZoneId resZoneId = ZoneId.of(.responseTimeZoneId());
-//         return resZoneId,reqZoneId;
-//    }
 
-
-    public LocalDateTime localdatetimeformatt(int a, int b, int c, int d, int e, int f) {
-        LocalDateTime localDateTime1 = LocalDateTime.of(a, b, c, d, e, f);
-
-        return localDateTime1;
+    public LocalDateTime localDateTimeFormat(int year, int month, int date, int hour, int minute, int second) {
+        return LocalDateTime.of(year, month, date, hour, minute, second);
     }
 
-    public String zoneid(LocalDateTime localDateTime, String requestTimeZoneId, String responseTimeZoneId) {
+    public String zoneId(LocalDateTime localDateTime, String requestTimeZoneId, String responseTimeZoneId) {
         ZoneId requestZoneId = ZoneId.of(requestTimeZoneId);
         ZoneId responseZoneId = ZoneId.of(responseTimeZoneId);
 
@@ -47,7 +38,6 @@ public class ScheduleService {
         ZonedDateTime responseZonedDateTime = requestZonedDateTime.withZoneSameInstant(responseZoneId);
 
         return responseZonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-
     }
 
     public MessageEntity createMessage(String message) {
@@ -64,16 +54,13 @@ public class ScheduleService {
         return sampleRepository.findByMessageContaining(message);
     }
 
-    public LocalDateTime localdatetimeformat(int year, int month, int date, int hour, int minute, int second) {
+    public LocalDateTime localDatetimeFormat(int year, int month, int date, int hour, int minute, int second) {
         return null;
     }
-
-    public CharSequence zoneId(LocalDateTime startLocalDateTime, String requestTimeZoneId, String responseTimeZoneId) {
-        return null;
-    }
-
-
 }
+
+
+
 
 
 

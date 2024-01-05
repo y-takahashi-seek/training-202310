@@ -33,9 +33,9 @@ public class ScheduleController {
 
     @GetMapping("/times/current")
     public currentTimeResponse sample1() {
-        
+
         LocalDateTime now = LocalDateTime.now();
-      
+
         String datetime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00"));
         return new currentTimeResponse(datetime);
     }
@@ -44,20 +44,19 @@ public class ScheduleController {
     public convertedTimeResponse sample2(@RequestBody yearMonthDateRequest Samplerequest) {
 
 
-
         try {
-           
-            LocalDateTime localDateTime = scheduleService.localdatetimeformatt(Samplerequest.year(), Samplerequest.month(), Samplerequest.date(),
+
+            LocalDateTime localDateTime = scheduleService.localDateTimeFormat(Samplerequest.year(), Samplerequest.month(), Samplerequest.date(),
                     Samplerequest.hour(), Samplerequest.minute(), Samplerequest.second());
 
 
-            ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneid(localDateTime, Samplerequest.requestTimeZoneId(), Samplerequest.responseTimeZoneId()));
-          
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneId(localDateTime, Samplerequest.requestTimeZoneId(), Samplerequest.responseTimeZoneId()));
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
             String convertedTime = formatter.format(zonedDateTime);
             return new convertedTimeResponse(convertedTime);
         } catch (DateTimeException e) {
-        
+
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date/time or timezone");
         }
 
@@ -139,11 +138,11 @@ public class ScheduleController {
     @GetMapping("/end")
     public SampleTimeResponse calculateEndTime(@RequestBody SampleTimeRequest sampleTimeRequest) {
         try {
-            
+
             SampleTimeRequest.StartTime startTime = sampleTimeRequest.startTime();
             SampleTimeRequest.Duration duration = sampleTimeRequest.duration();
-         
-            LocalDateTime startLocalDateTime = scheduleService.localdatetimeformat(startTime.year(), startTime.month(), startTime.date(),
+
+            LocalDateTime startLocalDateTime = scheduleService.localDatetimeFormat(startTime.year(), startTime.month(), startTime.date(),
                     startTime.hour(), startTime.minute(), startTime.second());
 
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduleService.zoneId(startLocalDateTime,

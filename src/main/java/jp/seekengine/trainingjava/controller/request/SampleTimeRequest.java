@@ -1,5 +1,6 @@
 package jp.seekengine.trainingjava.controller.request;
 //task5
+
 import java.io.Serializable;
 
 public record SampleTimeRequest(
@@ -7,13 +8,16 @@ public record SampleTimeRequest(
         Duration duration,
         String requestTimeZoneId,
         String responseTimeZoneId
-)implements Serializable {
+) implements Serializable {
     public record Duration(
             int hour, int minute, int second
-    )implements Serializable {}
+    ) implements Serializable {
+    }
+
     public record StartTime(
             int year, int month, int date, int hour, int minute, int second
-    )implements Serializable {}
+    ) implements Serializable {
+    }
 }
 
 

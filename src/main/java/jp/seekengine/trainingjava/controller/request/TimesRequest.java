@@ -7,4 +7,5 @@ public record TimesRequest(
         TimeDetail[] times,
         String requestTimeZoneId,
         String responseTimeZoneId
-)implements Serializable {}
+) implements Serializable {
+}
