@@ -4,4 +4,5 @@ import java.io.Serializable;
 
 public record SampleResponse(
         String sampleField
-) implements Serializable {}
+) implements Serializable {
+}

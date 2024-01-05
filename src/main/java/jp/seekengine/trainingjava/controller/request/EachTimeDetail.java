@@ -1,16 +1,18 @@
 package jp.seekengine.trainingjava.controller.request;
 
+//task4
 public record EachTimeDetail(
-         Number year,
-         Number month,
-         Number date,
-         Number hour,
-         Number minute,
-         Number second
+        Number year,
+        Number month,
+        Number date,
+        Number hour,
+        Number minute,
+        Number second
         // getters and setters
-){    public int yearAsInt() {
-    return year.intValue();
-}
+) {
+    public int yearAsInt() {
+        return year.intValue();
+    }
 
     public int monthAsInt() {
         return month.intValue();
