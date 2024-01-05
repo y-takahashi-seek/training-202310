@@ -30,7 +30,7 @@ public class ScheduleService {
         return LocalDateTime.of(year, month, date, hour, minute, second);
     }
 
-    public String zoneId(LocalDateTime localDateTime, String requestTimeZoneId, String responseTimeZoneId) {
+public String zoneId(LocalDateTime localDateTime, String requestTimeZoneId, String responseTimeZoneId) {
         ZoneId requestZoneId = ZoneId.of(requestTimeZoneId);
         ZoneId responseZoneId = ZoneId.of(responseTimeZoneId);
 
