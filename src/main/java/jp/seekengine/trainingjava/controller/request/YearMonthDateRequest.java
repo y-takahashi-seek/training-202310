@@ -3,7 +3,7 @@ package jp.seekengine.trainingjava.controller.request;
 import java.io.Serializable;
 
 //task2
-public record yearMonthDateRequest(
+public record YearMonthDateRequest(
         int year,
         int month,
         int date,
