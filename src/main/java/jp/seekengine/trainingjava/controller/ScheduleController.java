@@ -41,7 +41,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/times/current/convert")
-    public convertedTimeResponse sample2(@RequestBody yearMonthDateRequest Samplerequest) {
+    public convertedTimeResponse sample2(@RequestBody YearMonthDateRequest Samplerequest) {
 
 
         try {
